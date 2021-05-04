@@ -4,7 +4,7 @@ import { PrimitiveArray } from 'c3';
 import * as d3 from 'd3';
 import * as cloud from 'd3-cloud';
 import { WorkflowStatusService } from '../../service/workflow-status/workflow-status.service';
-import { ResultObject } from '../../types/execute-workflow.interface';
+import { ResultObject, IncrementalOutputMode, IncrementalOutputResult } from '../../types/execute-workflow.interface';
 import { ChartType, WordCloudTuple } from '../../types/visualization.interface';
 import { Subscription } from 'rxjs';
 
@@ -51,14 +51,14 @@ export class VisualizationPanelContentComponent implements AfterViewInit, OnDest
 
   ngAfterViewInit() {
     // attempt to draw chart immediately
-    this.drawChart();
+    this.drawChartWithResultSnapshot();
 
     // setup an event lister that re-draws the chart content every (n) miliseconds
     // auditTime makes sure the first re-draw happens after (n) miliseconds has elapsed
     this.updateSubscription = this.workflowStatusService.getResultUpdateStream()
       .auditTime(VisualizationPanelContentComponent.UPDATE_INTERVAL_MS)
-      .subscribe(() => {
-        this.drawChart();
+      .subscribe(update => {
+        this.drawChartWithResultSnapshot();
       });
   }
 
@@ -74,17 +74,17 @@ export class VisualizationPanelContentComponent implements AfterViewInit, OnDest
     }
   }
 
-  drawChart() {
+  drawChartWithResultSnapshot() {
     if (!this.operatorID) {
       return;
     }
-    const result: ResultObject | undefined = this.workflowStatusService.getCurrentResult()[this.operatorID];
+    const result: IncrementalOutputResult = this.workflowStatusService.getCurrentIncrementalResult()[this.operatorID];
     if (!result) {
       return;
     }
 
-    this.data = result.table as object[];
-    this.chartType = result.chartType;
+    this.data = result.result.table as object[];
+    this.chartType = result.result.chartType;
 
     switch (this.chartType) {
       // correspond to WordCloudSink.java
