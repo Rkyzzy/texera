@@ -1,21 +1,35 @@
-*.iml
-/.idea
-/.idea_modules
-/.project
-/.settings
+# Ignoring targets
 target/
 out/
-user-resources/
-
 
 # Ignoring IntelliJ related files
-.idea
+*.iml
+.idea/
+.idea_modules/
 
+# Ignoring vscode related files
+.vscode/
 
 # Ignoring Eclipse files
-.classpath
-.project
-.settings
+.classpath/
+.project/
+.settings/
+
+# Ignoring Mac OSX specific files
+.DS_Store
+
+# Ignoring jenv-related files
+.java-version
+
+# Ignoring python related files
+venv/
+*.pyc
+
+# Ignoring rebel related files
+rebel.xml
+
+# Ignoring user-resources related files
+user-resources/
 
 # Ignoring index folder and data folder
 index
@@ -23,12 +37,3 @@ catalog
 plan/
 plan_files/
 query-results/
-
-# Ignoring Mac OSX specific files
-.DS_Store
-
-# Ignoring jenv-related files
-**/.java-version
-
-**/venv
-**/*.pyc
